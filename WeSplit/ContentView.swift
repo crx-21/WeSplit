@@ -43,12 +43,12 @@ struct MainApp: View {
     @FocusState private var isFocused:Bool
     let arrayTips = [10, 20, 30, 40, 50]
     @State private var selectedTip = 10
-    var calculateBill:Double
+    var calculateBill: (Double,Double)
     {
         
         var tipSum=(billValue*Double(selectedTip))/100
         var finalSum=(billValue+tipSum)/Double(numberOfPeople)
-        return finalSum
+        return (finalSum,tipSum)
     }
     var body: some View {
         NavigationStack {
@@ -90,22 +90,26 @@ struct MainApp: View {
                     HStack{
                         Section {
                             Text("Result:")
-                            Text(calculateBill, format: .currency(code: Locale.current.currency?.identifier ?? "RON"))
+                            Text(calculateBill.0, format: .currency(code: Locale.current.currency?.identifier ?? "RON"))
                                                     }
                         Section{
-                            Text("Original:")
-                            Text(billValue, format: .currency(code: Locale.current.currency?.identifier ?? "RON"))
+                            Text("Bill+Tip:")
+                            Text(calculateBill.1, format: .currency(code: Locale.current.currency?.identifier ?? "RON"))
                         
                         }
                         
                     }
                     
                 }
-                
-                
 
-                
-
+            }
+        }
+        .toolbar {
+            if isFocused{
+                Button("Done")
+                {
+                    isFocused=false
+                }
             }
         }
     }
