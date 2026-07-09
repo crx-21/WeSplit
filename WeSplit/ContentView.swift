@@ -39,14 +39,15 @@ struct ContentView: View {
 struct MainApp: View {
     @State private var numberOfPeople=0
     @State private var billValue = 0.0
-    @State private var showCalculation=false
+    @State private var computedCalculation = 0.0
+    @FocusState private var isFocused:Bool
     let arrayTips = [10, 20, 30, 40, 50]
     @State private var selectedTip = 10
-    func calculateBill(bill:Double,tip:Double,people:Double) -> Double
+    var calculateBill:Double
     {
         
-        var tipSum=(bill*tip)/100
-        var finalSum=(bill+tipSum)/people
+        var tipSum=(billValue*Double(selectedTip))/100
+        var finalSum=(billValue+tipSum)/Double(numberOfPeople)
         return finalSum
     }
     var body: some View {
@@ -58,7 +59,9 @@ struct MainApp: View {
                         TextField(
                             "Type the number of people here!",
                             value: $numberOfPeople,format: .number
-                        )
+                               
+                        )   .focused($isFocused)
+                        .keyboardType(.decimalPad)
                     }
                     
                     Section{
@@ -69,7 +72,7 @@ struct MainApp: View {
                             format: .currency(
                                 code: Locale.current.currency?.identifier ?? "USD"
                             )
-                        )
+                        ).focused($isFocused)
                         .keyboardType(.decimalPad)
                     }
                     
@@ -81,14 +84,25 @@ struct MainApp: View {
                                     Text($0, format: .percent)
                                 }
                             }
+                            .pickerStyle(.segmented)
                         }
                     }
+                    HStack{
+                        Section {
+                            Text("Result:")
+                            Text(calculateBill, format: .currency(code: Locale.current.currency?.identifier ?? "RON"))
+                                                    }
+                        Section{
+                            Text("Original:")
+                            Text(billValue, format: .currency(code: Locale.current.currency?.identifier ?? "RON"))
+                        
+                        }
+                        
+                    }
+                    
                 }
                 
-                Button(action: {showCalculation=true})
-                    {
-                        Text("Start Calculation!")
-                    }
+                
 
                 
 
